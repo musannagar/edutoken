@@ -1,1 +1,39 @@
 
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract EduToken {
+    string public name = "EduToken";
+    string public symbol = "EDU";
+    uint8 public decimals = 0;
+    uint256 public totalSupply;
+
+    address public admin;
+
+    mapping(address => uint256) public balanceOf;
+
+    event Rewarded(address indexed student, uint256 amount);
+    event Transferred(address indexed from, address indexed to, uint256 amount);
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin can perform this action");
+        _;
+    }
+
+    function rewardStudent(address student, uint256 amount) external onlyAdmin {
+        balanceOf[student] += amount;
+        totalSupply += amount;
+        emit Rewarded(student, amount);
+    }
+
+    function transfer(address to, uint256 amount) external {
+        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
+        emit Transferred(msg.sender, to, amount);
+    }
+}
