@@ -14,6 +14,9 @@ contract EduToken {
     event Rewarded(address indexed student, uint256 amount);
     event Transferred(address indexed from, address indexed to, uint256 amount);
     event Redeemed(address indexed student, uint256 amount);
+    event Burned(address indexed student, uint256 amount);
+    event Minted(address indexed admin, uint256 amount);
+    event AdminChanged(address indexed oldAdmin, address indexed newAdmin);
 
     constructor() {
         admin = msg.sender;
@@ -24,7 +27,7 @@ contract EduToken {
         _;
     }
 
-    /// @notice Reward tokens to a student (only admin can call this)
+    /// @notice Reward tokens to a student (only admin)
     function rewardStudent(address student, uint256 amount) external onlyAdmin {
         balanceOf[student] += amount;
         totalSupply += amount;
@@ -45,11 +48,33 @@ contract EduToken {
         balanceOf[msg.sender] -= amount;
         totalSupply -= amount;
         emit Redeemed(msg.sender, amount);
-        // Logic for actual redemption can be added here (e.g., mint NFT, give badge, etc.)
     }
 
     /// @notice View any student's balance
     function getStudentBalance(address student) external view returns (uint256) {
         return balanceOf[student];
+    }
+
+    /// @notice Burn (destroy) your own tokens
+    function burnTokens(uint256 amount) external {
+        require(balanceOf[msg.sender] >= amount, "Insufficient tokens to burn");
+        balanceOf[msg.sender] -= amount;
+        totalSupply -= amount;
+        emit Burned(msg.sender, amount);
+    }
+
+    /// @notice Admin can mint extra tokens for the system
+    function mintTokens(uint256 amount) external onlyAdmin {
+        balanceOf[admin] += amount;
+        totalSupply += amount;
+        emit Minted(admin, amount);
+    }
+
+    /// @notice Admin can transfer the admin role to another address
+    function changeAdmin(address newAdmin) external onlyAdmin {
+        require(newAdmin != address(0), "New admin cannot be zero address");
+        address oldAdmin = admin;
+        admin = newAdmin;
+        emit AdminChanged(oldAdmin, newAdmin);
     }
 }
