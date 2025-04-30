@@ -19,5 +19,9 @@ To build a transparent, secure, and decentralized reward system that motivates s
 - **Multi-admin Support**: Enable multiple verified educators to reward tokens.
 - **Leaderboard Integration**: Track top-performing students.
 - **NFT Badges**: Award NFTs for milestones alongside EDU tokens.
+- 0xE35595099029F55B84bb789443C3B722B794b485
+- ![Screenshot 2025-04-30 212622](https://github.com/user-attachments/assets/7e28b987-ecb9-46c4-9689-fb238506f55b)
+
+
 
 
